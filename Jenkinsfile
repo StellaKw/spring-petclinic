@@ -28,6 +28,31 @@ pipeline {
             }
         }
 
+        stage('Test with JaCoCo') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh '/opt/homebrew/bin/mvn test jacoco:report'  // Adjust the path as needed
+                    } else {
+                        bat 'mvn test jacoco:report'
+                    }
+                }
+            }
+            post {
+                always {
+                    // Publish the JaCoCo report as an HTML report in Jenkins
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: "JaCoCo Coverage Report"
+                    ])
+                }
+            }
+        }
+
         stage('Code Coverage with JaCoCo') {
             steps {
                 script {
