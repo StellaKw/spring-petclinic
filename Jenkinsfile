@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     triggers {
-        cron('H/3 * * * 1')  // This triggers the job every 3 minutes on Mondays
+        cron('*/3 * * * 1')  // Every 3 minutes on Mondays
     }
 
     tools {
-        maven 'Maven' // Make sure you have Maven tool configured in Jenkins
+        maven 'Maven' // Ensure this matches your configured Maven tool name in Jenkins
     }
 
     stages {
@@ -18,13 +18,25 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                bat 'mvn clean install'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn clean install'
+                    } else {
+                        bat 'mvn clean install'
+                    }
+                }
             }
         }
 
         stage('Code Coverage with JaCoCo') {
             steps {
-                bat 'mvn jacoco:report'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn jacoco:report'
+                    } else {
+                        bat 'mvn jacoco:report'
+                    }
+                }
             }
             post {
                 success {
