@@ -6,7 +6,7 @@ pipeline {
     }
 
     tools {
-        maven 'Maven 3' // Make sure you have Maven tool configured in Jenkins
+        maven 'Maven' // Make sure you have Maven tool configured in Jenkins
     }
 
     stages {
